@@ -18,11 +18,11 @@ ENV JAVA_ALPINE_VERSION 8.131.11-r2
 ENV HADOOP_HOME /usr/local/hadoop
 
 RUN set -x \
-    && apk add --no-cache openjdk8=$JAVA_ALPINE_VERSION curl tar gzip bash \
+    && apk add --no-cache openjdk8=$JAVA_ALPINE_VERSION curl tar gzip bash openssh rsync \
     && [ "$JAVA_HOME" = "$(docker-java-home)" ]
 
 # install common hadoop
-RUN curl -OL https://mirrors.tuna.tsinghua.edu.cn/apache/hadoop/common/hadoop-2.8.2/hadoop-2.8.2.tar.gz \
+RUN curl -OL http://mirror.bit.edu.cn/apache/hadoop/common/hadoop-2.8.2/hadoop-2.8.2.tar.gz \
  && tar -xvf hadoop-2.8.2.tar.gz \
  && mv hadoop-2.8.2 /usr/local/hadoop \
  && rm hadoop-2.8.2.tar.gz
