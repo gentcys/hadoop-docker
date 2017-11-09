@@ -23,10 +23,25 @@ RUN set -x \
 
 # install common hadoop
 RUN curl -OL http://mirror.bit.edu.cn/apache/hadoop/common/hadoop-2.8.2/hadoop-2.8.2.tar.gz \
- && tar -xvf hadoop-2.8.2.tar.gz \
+ && tar -xf hadoop-2.8.2.tar.gz \
  && mv hadoop-2.8.2 /usr/local/hadoop \
  && rm hadoop-2.8.2.tar.gz
 
 RUN mkdir -p ~/hdfs/namenode \
  && mkdir -p ~/hdfs/datanode \
  && mkdir $HADOOP_HOME/logs
+
+RUN ssh-keygen -q -N "" -t dsa -f /etc/ssh/ssh_host_dsa_key
+RUN ssh-keygen -q -N "" -t rsa -f /etc/ssh/ssh_host_rsa_key
+RUN ssh-keygen -q -N "" -t ecdsa -f /etc/ssh/ssh_host_ecdsa_key
+RUN ssh-keygen -q -N "" -t ed25519 -f /etc/ssh/ssh_host_ed25519_key
+RUN mkdir -p /root/.ssh
+RUN cp /etc/ssh/ssh_host_rsa_key /root/.ssh/id_rsa
+RUN cat /etc/ssh/ssh_host_rsa_key.pub >> /root/.ssh/authorized_keys
+RUN chmod 600 /root/.ssh/authorized_keys
+
+# RUN /usr/sbin/sshd -D -f /etc/ssh/sshd_config
+
+EXPOSE 22
+
+ENTRYPOINT ["sh", "-c", "/usr/sbin/sshd -D -f /etc/ssh/sshd_config; bash"]
